@@ -283,6 +283,32 @@ s32 net_poll(struct pollsd *sds,s32 nsds,s32 timeout);
 s32 net_shutdown(s32 s, u32 how);
 
 struct hostent * net_gethostbyname(const char *addrString);
+s32 net_getsockname(s32 s, struct sockaddr *addr, socklen_t *addrlen);
+s32 net_getsockopt(s32 s, u32 level, u32 optname, void *optval, socklen_t *optlen)
+
+struct pollfd {
+    int   fd;         /* Descripteur de fichier */
+    short events;     /* Événements attendus    */
+    short revents;    /* Événements détectés    */
+};
+
+#define gethostip net_gethostip
+#define bind(a,b,c) net_bind(a,b,c)
+#define listen net_listen
+#define accept net_accept
+#define connect(a,b,c) net_connect(a,b,c)
+#define send(a,b,c,d) net_send(a,b,c,d)
+#define sendto net_sendto
+#define recv net_recv
+#define recvfrom net_recvfrom
+#define socket(a,b,c) net_socket(a,b,c)
+#define select net_select
+#define setsockopt net_setsockopt
+#define ioctl(a,b,c) net_ioctl(a,b,c)
+#define poll(a,b,c) net_poll(a,b,c)
+#define gethostbyname net_gethostbyname
+#define getsockname net_getsockname
+#define AF_INET6 AF_INET
 
 #ifdef __cplusplus
 	}

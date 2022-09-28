@@ -2255,3 +2255,57 @@ s32 net_ioctl(s32 s, u32 cmd, void *argp)
 			return -EINVAL;
 	}
 }
+
+
+struct hostent * net_gethostbyname(const char *addrString)
+{
+	s32 ret, len, i;
+	u8 *params;
+	struct hostent *ipData;
+	u32 addrOffset;
+	static u8 ipBuffer[0x460] ATTRIBUTE_ALIGN(32);
+
+	memset(ipBuffer, 0, 0x460);
+
+	len = strlen(addrString) + 1;
+	params = mem_malloc(len);
+	if (params==NULL) {
+		return NULL;
+	}
+
+	memcpy(params, addrString, len);
+	
+	if(params!=NULL) mem_free(params);
+
+	ipData = ((struct hostent*)ipBuffer);
+	addrOffset = (u32)MEM_PHYSICAL_TO_K0(ipData->h_name) - ((u32)ipBuffer + 0x10);
+
+	ipData->h_name = MEM_PHYSICAL_TO_K0(ipData->h_name) - addrOffset;
+	ipData->h_aliases = MEM_PHYSICAL_TO_K0(ipData->h_aliases) - addrOffset;
+
+	for (i=0; (i < 0x40) && (ipData->h_aliases[i] != 0); i++) {
+		ipData->h_aliases[i] = MEM_PHYSICAL_TO_K0(ipData->h_aliases[i]) - addrOffset;
+	}
+
+	ipData->h_addr_list = MEM_PHYSICAL_TO_K0(ipData->h_addr_list) - addrOffset;
+
+	for (i=0; (i < 0x40) && (ipData->h_addr_list[i] != 0); i++) {
+		ipData->h_addr_list[i] = MEM_PHYSICAL_TO_K0(ipData->h_addr_list[i]) - addrOffset;
+	}
+
+	errno = 0;
+	return ipData;
+}
+
+s32 net_getsockname(s32 s, struct sockaddr *addr, socklen_t *addrlen)
+{
+   return 0;
+}
+
+s32 net_getsockopt(s32 s, u32 level, u32 optname, void *optval, socklen_t *optlen)
+{
+   /* TODO/FIXME: Implement getsockopt */
+   memset(optval, 0, *optlen);
+
+   return 0;
+}
