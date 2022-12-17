@@ -30,6 +30,7 @@ export BASEDIR		:= $(CURDIR)
 export LWIPDIR		:= $(BASEDIR)/lwip
 export OGCDIR		:= $(BASEDIR)/libogc
 export MODDIR		:= $(BASEDIR)/libmodplay
+export MODDIR_ASND	:= $(BASEDIR)/libmodplay_asnd
 export MADDIR		:= $(BASEDIR)/libmad
 export SAMPLEDIR	:= $(BASEDIR)/libsamplerate
 export DBDIR		:= $(BASEDIR)/libdb
@@ -63,6 +64,7 @@ endif
 BBALIB		:= $(LIBDIR)/libbba
 OGCLIB		:= $(LIBDIR)/libogc
 MODLIB		:= $(LIBDIR)/libmodplay
+MODLIB_ASND	:= $(LIBDIR)/libmodplay_asnd
 MADLIB		:= $(LIBDIR)/libmad
 DBLIB		:= $(LIBDIR)/libdb
 DILIB		:= $(LIBDIR)/libdi
@@ -109,6 +111,7 @@ VPATH :=	$(LWIPDIR)				\
 			$(LWIPDIR)/netif	\
 			$(OGCDIR)			\
 			$(MODDIR)			\
+			$(MODDIR_ASND)			\
 			$(MADDIR)			\
 			$(SAMPLEDIR)			\
 			$(DBDIR)			\
@@ -151,6 +154,9 @@ OGCOBJ		:=	\
 
 #---------------------------------------------------------------------------------
 MODOBJ		:=	freqtab.o mixer.o modplay.o semitonetab.o gcmodplay.o
+
+#---------------------------------------------------------------------------------
+MODOBJ_ASND		:=	freqtab.o mixer.o modplay.o semitonetab.o asnd_gcmodplay.o
 
 #---------------------------------------------------------------------------------
 MADOBJ		:=	mp3player.o bit.o decoder.o fixed.o frame.o huffman.o \
@@ -253,6 +259,8 @@ $(MP3LIB).a: $(MP3OBJ)
 #---------------------------------------------------------------------------------
 $(MODLIB).a: $(MODOBJ)
 #---------------------------------------------------------------------------------
+$(MODLIB_ASND).a: $(MODOBJ_ASND)
+#---------------------------------------------------------------------------------
 $(MADLIB).a: $(MADOBJ)
 #---------------------------------------------------------------------------------
 $(DBLIB).a: $(DBOBJ)
@@ -316,7 +324,7 @@ dist: wii cube install-headers
 	@tar -cvjf libogc2-$(VERSTRING).tar.bz2 include lib libogc_license.txt gamecube_rules wii_rules
 
 
-LIBRARIES	:=	$(OGCLIB).a  $(MODLIB).a $(MADLIB).a $(DBLIB).a \
+LIBRARIES	:=	$(OGCLIB).a  $(MODLIB).a $(MODLIB_ASND).a $(MADLIB).a $(DBLIB).a \
 				$(TINYSMBLIB).a $(ASNDLIB).a $(AESNDLIB).a $(ISOLIB).a
 
 ifeq ($(PLATFORM),cube)
